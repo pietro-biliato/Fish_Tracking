@@ -21,6 +21,9 @@ In the 'run_toy.jl' included file change:
   for proper rescaling
 - the sigma of the gaussian of the depth model 'log_prob_signal'
 
+
+October 03, 2025 -- Pietro Biliato
+pietro.biliato@studenti.unipd.it
 ------------------=#
 
 import Pkg
