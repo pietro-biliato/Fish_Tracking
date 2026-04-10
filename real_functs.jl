@@ -1,6 +1,8 @@
 ## -------------------------------------------------------
-## find_PT_march.jl
 ## Core functions and types for Fish Tracking Inference
+##
+## April 10, 2026 -- Sebastian Waruszynski
+## sebastian.waruszynski@studenti.unipd.it
 ## -------------------------------------------------------
 
 using Distributions, Interpolations, Plots, Random
@@ -32,7 +34,7 @@ struct DepthGauge <: Sensor end
 # DATA LOADING FUNCTIONS
 # ============================================================================
 
-"""Load and prepare bathymetry data with interpolation"""
+#Load and prepare bathymetry data with interpolation
 function load_bathymetry(path::String)
     bathy = GeoArrays.read(path)
     arr = GeoArrays.values(bathy)
@@ -56,7 +58,7 @@ function load_bathymetry(path::String)
     )
 end
 
-"""Load and clean depth observations"""
+#Load and clean depth observations
 function load_depth_data(path::String, start_idx::Int, end_idx::Int)
     df = CSV.read(path, DataFrame, dateformat="yyyy-mm-dd H:M:S")
     rename!(df, :Column1 => :time)
@@ -68,7 +70,7 @@ function load_depth_data(path::String, start_idx::Int, end_idx::Int)
     return df[start_idx:end_idx, :]
 end
 
-"""Load acoustic receiver positions and observations"""
+#Load acoustic receiver positions and observations
 function load_acoustic_data(moorings_path::String, acoustics_path::String, start_idx::Int, end_idx::Int)
     moorings_df = CSV.read(moorings_path, DataFrame)
     acoustic_obs_df = CSV.read(acoustics_path, DataFrame, dateformat="yyyy-mm-dd H:M:S", missingstring="NA")
@@ -100,7 +102,7 @@ end
 dist(c1, c2) = sqrt((c1.x - c2.x)^2 + (c1.y - c2.y)^2)
 direction(c1, c2) = atan(c1.x - c2.x,  c1.y - c2.y)
 
-"""Get depth at specific real-world coordinates"""
+#Get depth at specific real-world coordinates
 function get_depth_at(bathy::GeoArray, interp, x::Real, y::Real)
     f_inv = inv(bathy.f)
     colrow = f_inv(SVector(x, y))
@@ -113,9 +115,7 @@ end
 # TRAJECTORY SIMULATION
 # ============================================================================
 
-"""
-Generate a pure random walk trajectory, ensuring points stay in the water.
-"""
+#Generate a pure random walk trajectory, ensuring points stay in the water.
 function simulateRW_free(tmax; s0, sigma = 30.0,
                          bathy = nothing, ex_itp = nothing,
                          max_land_tries = 100,
@@ -143,10 +143,8 @@ function simulateRW_free(tmax; s0, sigma = 30.0,
     return traj
 end
 
-"""
-Generate a trajectory with a soft drift towards acoustic detections.
-After the last detection, it reverts to a pure random walk.
-"""
+#Generate a trajectory with a soft drift towards acoustic detections.
+#After the last detection, it reverts to a pure random walk.
 function simulateRW_acoustic(tmax, Yacc; s0, sigma = 30.0,
                              drift_cap = 2.0,        
                              bathy = nothing,         
@@ -250,7 +248,7 @@ end
 # OBSERVATION PREPARATION
 # ============================================================================
 
-"""Build receiver activation sequence from acoustic data"""
+#Build receiver activation sequence from acoustic data
 function build_receiver_sequence(acoustic_array, acoustic_pos; start_point::NamedTuple)
     n_time, n_receivers = size(acoustic_array)
     last_state = falses(n_receivers)
@@ -279,7 +277,7 @@ function build_receiver_sequence(acoustic_array, acoustic_pos; start_point::Name
     return receiver_seq, t_steps, events
 end
 
-"""Prepare acoustic observations for Pigeons"""
+#Prepare acoustic observations for Pigeons
 function prepare_acoustic_observations(acoustic_array, moorings_df)
     receivers = [
         Receiver(
@@ -304,7 +302,7 @@ function prepare_acoustic_observations(acoustic_array, moorings_df)
     return Yaccustic, receivers
 end
 
-"""Prepare depth observations for Pigeons"""
+#Prepare depth observations for Pigeons
 function prepare_depth_observations(depth_signals)
     Ydepth = Tuple{Int, Float64, DepthGauge}[]
     depthgauge = DepthGauge()
@@ -416,8 +414,9 @@ function (lp::FishPriorPotential)(v::AbstractVector)
         lp_val += log_prob_signal(signal, S[t], device, k)
     end
     
-    # Note: Depth likelihood is intentionally omitted in the reference potential 
-    # based on your current tuning logic, but could be re-enabled here if needed.
+    # Note: one MAY add/omit the accustic likelihood in the PRIOR too (being aware that
+    # formulating a data-dependent prior is usually not a good practice): we know a 
+    # priori that the fish must pass close to the active receivers, when they're active.
     
     return lp_val
 end
@@ -474,9 +473,7 @@ function initialization(lp::FishPriorPotential, rng::AbstractRNG, replica_index:
 end
 
 function sample_iid!(lp::FishPriorPotential, rng::AbstractRNG, v::AbstractVector; tries=300)
-    # Hardcoded start point based on your setup
-    s0 = (x=709757.111649658, y=6.26772603565296e6)
-
+    s0 = (x=709757.111649658, y=6.26772603565296e6) # Hardcoded start point
     σ_sample = rand(rng, truncated(Normal(60, 15), 1.0, Inf))
     σ_depth_sample = rand(rng, LogNormal(3, 0.5)) 
 
@@ -510,7 +507,7 @@ end
 # ANALYSIS FUNCTIONS
 # ============================================================================
 
-"""Analyze active receivers in the specified segment"""
+#Analyze active receivers in the specified segment
 function analyze_active_receivers(acoustic_array, init_segment, end_segment)
     segment_array = acoustic_array[init_segment:end_segment, :]
     n_time, n_receivers = size(segment_array)
@@ -552,7 +549,7 @@ function analyze_active_receivers(acoustic_array, init_segment, end_segment)
     return activations
 end
 
-"""Calculate step statistics for a trajectory"""
+#Calculate step statistics for a trajectory
 function calculate_step_statistics(trajectory)
     if length(trajectory) < 2
         println("\n=== STEP STATISTICS ===")
@@ -577,7 +574,7 @@ function calculate_step_statistics(trajectory)
     return (mean=mean_step, max=max_step, min=min_step, std=std_step)
 end
 
-"""Calculate distance to nearest receiver for each point in trajectory"""
+#Calculate distance to nearest receiver for each point in trajectory
 function analyze_receiver_distances(trajectory, receivers)
     println("\n=== DISTANCE TO NEAREST RECEIVER ANALYSIS ===")
     println("Analyzing $(length(trajectory)) trajectory points against $(length(receivers)) receivers")
@@ -643,7 +640,7 @@ end
 # VISUALIZATION FUNCTIONS
 # ============================================================================
 
-"""Create bathymetry plot with receivers and trajectory"""
+#Create bathymetry plot with receivers and trajectory
 function plot_trajectory(bathy, receivers, trajectory; 
                          title="Fish Trajectory", xlims=(700000.0, 715000.0), ylims=(6.2550e6, 6.2720e6))
     plt = heatmap(bathy; color=:blues, legend=false, title=title, xlims=xlims, ylims=ylims)
@@ -659,7 +656,7 @@ function plot_trajectory(bathy, receivers, trajectory;
     return plt
 end
 
-"""Create bathymetry plot with receivers and multiple trajectories"""
+#Create bathymetry plot with receivers and multiple trajectories
 function plot_trajectories_comparison(bathy, receivers, traj_init, traj_pigeons; 
                                       title="Fish Trajectory Comparison", xlims=(700000.0, 715000.0), ylims=(6.2550e6, 6.2720e6))
     plt = heatmap(bathy; color=:blues, legend=:topright, title=title, xlims=xlims, ylims=ylims)

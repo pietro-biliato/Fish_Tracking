@@ -1,5 +1,8 @@
 # ============================================================================
 # Fish Tracking Analysis with Parallel Tempering (Execution Script)
+#
+# April 10, 2026 -- Sebastian Waruszynski
+# sebastian.waruszynski@studenti.unipd.it
 # ============================================================================
 
 using Pkg
@@ -40,7 +43,7 @@ const Y_MIN = 6.2550e6
 const Y_MAX = 6.2720e6
 
 # File paths (Update these to your local paths if necessary)
-const BASE_DIR      = "C:\\Users\\teresa i robert\\Desktop\\TEST\\Fish-Trajectory-Inference-main\\Fish-Trajectory-Inference-main"
+const BASE_DIR      = "C:\\our_path_where_data_is"
 const BATHY_PATH    = joinpath(BASE_DIR, "bathymetry", "map_Firth_of_Lorn_200m.tif")
 const DEPTH_CSV     = joinpath(BASE_DIR, "observation", "depth.csv")
 const MOORINGS_CSV  = joinpath(BASE_DIR, "observation", "moorings.csv")
