@@ -38,7 +38,7 @@ For the real-data scenario, the trajectory preprocessing workflow leverages seve
 
 ## Repository Structure
 
-* **`toy_data.jl`**: The main script for the toy data analysis, covering both the toy bathymetry and real bathymetry configurations.
+* **`toy_functs.jl`**: The main script for the toy data analysis, covering both the toy bathymetry and real bathymetry configurations.
 * **`run_toy.jl`**: The module/script containing the core functions utilized by `toy_data.jl`.
-* **`run_inference_PT.jl`**: The main execution script for analyzing the real bathymetry with real observed data.
-* **`find_PT.jl`**: The script containing the specialized functions and preprocessing pipeline steps required by `run_inference_PT.jl`.
+* **`run_real.jl`**: The main execution script for analyzing the real bathymetry with real observed data.
+* **`real_functs.jl`**: The script containing the specialized functions and preprocessing pipeline steps required by `run_inference_PT.jl`.
