@@ -4,9 +4,9 @@
 
 Understanding the movements and migrations of marine animals, specifically rays, is a fundamental challenge in spatial ecology. This knowledge is essential for explaining observed ecological patterns, predicting responses to environmental changes, and informing effective conservation and management strategies. Because direct observation of individual rays over large scales is rarely feasible in vast and opaque aquatic environments, researchers rely on indirect measurements collected via electronic data storage tags attached to the animals. 
 
-These tags can record various environmental variables. However, the measurements from these tags are inherently noisy and indirect due to sensor inaccuracies, environmental variability, and incomplete spatial coverage. To address this, our project reconstructs plausible ray trajectories by leveraging the following specific types of available data:
+These tags can record various environmental variables. However, the measurements from these tags are inherently noisy and indirect due to sensor inaccuracies, environmental variability, and incomplete spatial coverage, but even to peculiar, non-typical, behaviors of the rays. To address this, our project reconstructs plausible ray trajectories by leveraging the following specific types of available data:
 
-* **Depth Measurements ($Y_d$):** Readings from pressure sensors that are matched to known bathymetry maps to estimate position. Uncertainties in this data often arise from tidal fluctuations, sensor drift, or imprecise bathymetric data.
+* **Depth Measurements ($Y_d$):** Readings from pressure sensors that are matched to known bathymetry maps to estimate position.
 * **Acoustic Data ($Y_a$):** Records of detections (and non-detections) from acoustic tags passing in proximity to fixed receivers. Detection probabilities naturally decrease with distance due to signal attenuation in water.
 * **Bathymetry Data:** Detailed maps of the underwater depth profile used alongside the depth measurements to enforce spatial realism and constraint the feasible state of the ray's trajectory.
 
