@@ -42,3 +42,4 @@ For the real-data scenario, the trajectory preprocessing workflow leverages seve
 * **`run_toy.jl`**: The module/script containing the core functions utilized by `toy_data.jl`.
 * **`run_real.jl`**: The main execution script for analyzing the real bathymetry with real observed data.
 * **`real_functs.jl`**: The script containing the specialized functions and preprocessing pipeline steps required by `run_inference_PT.jl`.
+* **`MCMC_Benchmarking&Fish_Tracking.pdf`**: Presentation illustrating the superior performance of Parallel Tempering compared to other MCMC samplers, and showcasing new Fish Tracking results that are not yet included in the report.
